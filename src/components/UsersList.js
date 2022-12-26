@@ -11,6 +11,7 @@ import {addUser, fetchUsers} from '../store'
 import Skeleton from './Skeleton'
 import Button from './Button'
 import {useThunk} from '../hooks/use-thunk'
+import UsersListItem from './UsersListItem'
 
 function UsersList() {
     // Handling loading state without using a custom hook.
@@ -20,14 +21,6 @@ function UsersList() {
     // const [creatingUserError, setCreatingUserError] = useState(null)
     // const dispatch = useDispatch()
 
-    //handling loding state with custom hook.
-    const [doFetchUsers, isLoadingUsers, loadingUsersError] =
-        useThunk(fetchUsers)
-    const [doCreateUser, isCreatingUser, creatingUserError] = useThunk(addUser)
-
-    const {data} = useSelector((state) => {
-        return state.users
-    })
     // useEffect(() => {
     //     setIsLoadingUsers(true)
     //     dispatch(fetchUsers())
@@ -43,6 +36,14 @@ function UsersList() {
     //         .catch((err) => setCreatingUserError(err))
     //         .finally(() => setIscreatingUser(false))
     // }
+    //handling loding state with custom hook.
+    const [doFetchUsers, isLoadingUsers, loadingUsersError] =
+        useThunk(fetchUsers)
+    const [doCreateUser, isCreatingUser, creatingUserError] = useThunk(addUser)
+
+    const {data} = useSelector((state) => {
+        return state.users
+    })
 
     useEffect(() => {
         doFetchUsers()
@@ -59,13 +60,7 @@ function UsersList() {
         content = <div>Error fetching data...</div>
     } else {
         content = data.map((user) => {
-            return (
-                <div key={user.id} className="mb-2 border rounded">
-                    <div className="flex p-2 justify-between items-center cursor-pointer">
-                        {user.name}
-                    </div>
-                </div>
-            )
+            return <UsersListItem key={user.id} user={user} />
         })
     }
 
