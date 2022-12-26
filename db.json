@@ -1,24 +1,12 @@
 {
   "users": [
     {
-      "id": 1,
-      "name": "Myra"
-    },
-    {
       "name": "Georgia Johns-Ferry",
       "id": 2
     },
     {
       "name": "Alejandro Mertz",
       "id": 3
-    },
-    {
-      "name": "Adrian Tromp",
-      "id": 4
-    },
-    {
-      "name": "Hannah Fritsch",
-      "id": 5
     },
     {
       "name": "Tracey Dietrich MD",
