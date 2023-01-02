@@ -10,7 +10,6 @@ const pause = (duration) => {
 
 const albumsApi = createApi({
     reducerPath: 'albums',
-    tagTypes: 'Album',
     baseQuery: fetchBaseQuery({
         baseUrl: 'http://localhost:3005',
         // FetchFn allows for overriding built-in fetch function
@@ -22,9 +21,20 @@ const albumsApi = createApi({
     }),
     endpoints(builder) {
         return {
+            removeAlbum: builder.mutation({
+                invalidatesTags: (result, error, album) => {
+                    return [{type: 'Album', id: album.id}]
+                },
+                query: (album) => {
+                    return {
+                        url: `/albums/${album.id}`,
+                        method: 'DELETE',
+                    }
+                },
+            }),
             addAlbum: builder.mutation({
                 invalidatesTags: (result, error, user) => {
-                    return [{type: 'Album', id: user.id}]
+                    return [{type: 'UsersAlbums', id: user.id}]
                 },
                 query: (user) => {
                     // user is a args/parameter for the useAddAlbumMutation hook i.e. useAddAlbumMutation(user)
@@ -40,7 +50,11 @@ const albumsApi = createApi({
             }),
             fetchAlbums: builder.query({
                 providesTags: (result, error, user) => {
-                    return [{type: 'Album', id: user.id}]
+                    const tags = result.map((album) => {
+                        return {type: 'Album', id: album.id}
+                    })
+                    tags.push({type: 'UsersAlbums', id: user.id})
+                    return tags
                 },
                 // fetchAlbums automatically generates a useFetchAlbums hook
                 query: (user) => {
@@ -58,5 +72,9 @@ const albumsApi = createApi({
     },
 })
 
-export const {useFetchAlbumsQuery, useAddAlbumMutation} = albumsApi
+export const {
+    useFetchAlbumsQuery,
+    useAddAlbumMutation,
+    useRemoveAlbumMutation,
+} = albumsApi
 export {albumsApi}
